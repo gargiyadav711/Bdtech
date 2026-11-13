@@ -2,6 +2,7 @@ import {Users,ClipboardCheck,FolderKanban,CalendarDays,ArrowUpRight,Clock,CheckC
 
 import MentorSidebar from "../Components/MentorSidebar";
 import "./MentorDashboard.css";
+import { useId } from "react";
 
 const stats = [
   {
@@ -110,7 +111,15 @@ const quickActions = [
     link: "/mentor/attendance",
   },
 ];
-
+function TextMorphHeading() {
+  return (
+    <h2 className="mentor-morph-heading">
+      <span>Guide.</span>
+      <span>Inspire.</span>
+      <span>Empower.</span>
+    </h2>
+  );
+}
 function MentorDashboard() {
   const mentorName = "Aastha Sharma";
   return (
@@ -120,10 +129,6 @@ function MentorDashboard() {
         <header className="mentor-header">
           <div className="mentor-header-text">
             <h1>Mentor Dashboard</h1>
-            <p className="mentor-subtitle">
-              Welcome back, {mentorName}. Here's an overview of your students
-              and activities.
-            </p>
           </div>
           <div className="mentor-header-right">
            <div className="mentor-header-user">
@@ -137,7 +142,7 @@ function MentorDashboard() {
         <section className="mentor-welcome-banner">
           <div className="mentor-welcome-text">
             <span className="mentor-eyebrow">YOUR IMPACT MATTERS</span>
-            <h2>Guide. Inspire. Empower.</h2>
+            <TextMorphHeading />
             <p>
               Every student has potential. Your guidance helps transform
               that potential into meaningful achievements.
