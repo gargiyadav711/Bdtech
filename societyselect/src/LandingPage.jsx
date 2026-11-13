@@ -111,32 +111,30 @@ function LandingPage() {
               alt="Student working on a development project"
             />
           </div>
-          <BorderBeam size={180} duration={9} thickness={2}>
-            <div className="feature-card">
-              <div className="feature-content">
-            <span className="eyebrow light-eyebrow">
-              WHAT MAKES US DIFFERENT
-            </span>
-            <h2>
-              A better way to
-              <br />
-              discover potential.
-            </h2>
-            <div className="feature-list">
-              {features.map((feature, index) => (
-                <div className="feature-item" key={feature.title}>
-                  <span className="feature-arrow">→</span>
-                  <div>
-                    <h3>{feature.title}</h3>
-                    <p>{feature.description}</p>
+          <div className="feature-card">
+            <div className="feature-content">
+              <span className="eyebrow light-eyebrow">
+                WHAT MAKES US DIFFERENT
+              </span>
+              <h2>
+                A better way to
+                <br />
+                discover potential.
+              </h2>
+              <div className="feature-list">
+                {features.map((feature, index) => (
+                  <div className="feature-item" key={feature.title}>
+                    <span className="feature-arrow">→</span>
+                    <div>
+                      <h3>{feature.title}</h3>
+                      <p>{feature.description}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
-            </div>
-          </BorderBeam>
-          
+
         </section>
         <section className="quote-section">
           <span className="eyebrow">OUR PHILOSOPHY</span>

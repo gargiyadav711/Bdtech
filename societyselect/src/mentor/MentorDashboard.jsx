@@ -1,8 +1,25 @@
-import {Users,ClipboardCheck,FolderKanban,CalendarDays,ArrowUpRight,Clock,CheckCircle2,CircleAlert,BookOpen,ChevronRight,} from "lucide-react";
+import { Users, ClipboardCheck, FolderKanban, CalendarDays, ArrowUpRight, Clock, CheckCircle2, CircleAlert, BookOpen, ChevronRight, } from "lucide-react";
 
 import MentorSidebar from "../Components/MentorSidebar";
 import "./MentorDashboard.css";
+function TextMorphHeading() {
+  const words = ["Guide.", "Inspire.", "Empower."];
 
+  return (
+    <h2 className="mentor-morph-heading">
+      {words.map((word, index) => (
+        <span
+          key={word}
+          style={{
+            animationDelay: `${index * 2}s`,
+          }}
+        >
+          {word}
+        </span>
+      ))}
+    </h2>
+  );
+}
 const stats = [
   {
     title: "Assigned Students",
@@ -120,13 +137,9 @@ function MentorDashboard() {
         <header className="mentor-header">
           <div className="mentor-header-text">
             <h1>Mentor Dashboard</h1>
-            <p className="mentor-subtitle">
-              Welcome back, {mentorName}. Here's an overview of your students
-              and activities.
-            </p>
           </div>
           <div className="mentor-header-right">
-           <div className="mentor-header-user">
+            <div className="mentor-header-user">
               <div className="mentor-header-avatar">AM</div>
               <div>
                 <h3>{mentorName}</h3>
@@ -137,7 +150,7 @@ function MentorDashboard() {
         <section className="mentor-welcome-banner">
           <div className="mentor-welcome-text">
             <span className="mentor-eyebrow">YOUR IMPACT MATTERS</span>
-            <h2>Guide. Inspire. Empower.</h2>
+            <TextMorphHeading />
             <p>
               Every student has potential. Your guidance helps transform
               that potential into meaningful achievements.
@@ -150,15 +163,27 @@ function MentorDashboard() {
         <section className="mentor-stats-grid">
           {stats.map((stat) => {
             const Icon = stat.icon;
+
             return (
               <article className="mentor-stat-card" key={stat.title}>
                 <div className="mentor-stat-top">
                   <div className="mentor-stat-icon">
-                    <Icon size={21} />
+                    <Icon size={24} />
                   </div>
                 </div>
-                <h3>{stat.title}</h3>
-                <h2>{stat.value}</h2>
+
+                <div className="mentor-stat-content">
+                  <div className="mentor-stat-header">
+                    <h3>{stat.title}</h3>
+                    <div className="mentor-stat-dots">
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                    </div>
+                  </div>
+
+                  <h2>{stat.value}</h2>
+                </div>
               </article>
             );
           })}
