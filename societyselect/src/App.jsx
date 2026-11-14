@@ -15,22 +15,17 @@ function App() {
     const hash = window.location.hash;
     if (path === "/login" || hash === "#login") return "login";
     if (path === "/forgot" || hash === "#forgot") return "forgot";
+    if (path === "/mentor" || hash === "#mentor") return "mentor";
+    if (path === "/student" || path === "/student/dashboard") return "student";
+    if (path === "/createproject" || hash === "#createproject") return "createproject";
+
     if (
+      path === "/register" ||
       hash === "#register" ||
-      hash === "#signup" ||
-      path === "/register"
+      hash === "#signup"
     ) {
       return "register";
     }
-
-    if (
-      path === "/mentor/students" ||
-      hash === "#students"
-    ) {
-      return "students";
-    }
-
-    if (path === "/mentor" || hash === "#mentor") return "mentor";
 
     return "landing";
   };
@@ -58,8 +53,9 @@ function App() {
   }
 
   if (route === "forgot") return <ForgotPassword />;
-  if (route === "students") return <AssignedStudents />;
+  if (route === "createproject") return <CreateProject />;
   if (route === "mentor") return <MentorDashboard />;
+  if (route === "student") return <StudentDashboard />;
 
   return <LandingPage />;
 }

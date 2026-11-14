@@ -1,0 +1,123 @@
+.dashboard-reveal {
+  opacity: 0;
+}
+
+.dashboard-reveal.is-in-view {
+  opacity: 1;
+  animation: rvIn 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+
+@keyframes rvIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.blur-text-word {
+  display: inline-block;
+  animation: blurWordIn 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  animation-delay: var(--blur-delay, 0ms);
+}
+
+@keyframes blurWordIn {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+.shiny-text {
+  color: transparent;
+  background: linear-gradient(110deg, var(--ink2) 35%, #7cc6dc 50%, var(--ink2) 65%);
+  background-size: 250% 100%;
+  background-clip: text;
+  animation: shinySweep 5s linear infinite;
+}
+
+@keyframes shinySweep {
+  from {
+    background-position: 150% 0;
+  }
+
+  to {
+    background-position: -50% 0;
+  }
+}
+
+.spotlight-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.spotlight-card::before {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    260px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(109, 159, 177, 0.18),
+    transparent 70%
+  );
+  content: "";
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.spotlight-card:hover::before {
+  opacity: 1;
+}
+
+.spotlight-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.magnet {
+  transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-reveal,
+  .dashboard-reveal.is-in-view {
+    opacity: 1;
+    animation: none !important;
+  }
+
+  .blur-text-word {
+    opacity: 1;
+    filter: none;
+    animation: none !important;
+  }
+
+  .shiny-text {
+    color: inherit;
+    background: none;
+    animation: none !important;
+  }
+
+  .spotlight-card::before {
+    display: none;
+  }
+
+  .magnet {
+    transform: none !important;
+    transition: none !important;
+  }
+}
