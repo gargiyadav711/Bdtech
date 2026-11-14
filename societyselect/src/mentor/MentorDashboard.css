@@ -759,24 +759,61 @@
     align-items: flex-start;
   }
 }
-.mentor-morph-heading {
-  display: grid;
-  grid-template-columns: 1fr;
+.mentor-welcome-banner {
   position: relative;
+  background: linear-gradient(135deg, #e4ecf3 0%, #cfdbec 100%);
+  border-radius: 16px;
+  padding: 48px 40px;
+  text-align: center;
+  color: #1e293b;
+  box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.6);
+  margin-bottom: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  justify-content: center; 
+  overflow: hidden;
+}
+
+.mentor-welcome-text {
+  max-width: 650px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
+}
+
+.mentor-eyebrow {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #64748b;
+  margin-bottom: 8px;
+}
+
+.mentor-morph-heading {
+  position: relative;
+  display: grid;
+  place-items: center;
   width: fit-content;
-  margin: 15px 0;
+  min-height: 75px;
+  margin: 15px auto; 
   font-size: 64px;
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1.1;
+  text-align: center;
 }
 
 .mentor-morph-heading span {
   grid-area: 1 / 1;
+  display: block;
   white-space: nowrap;
   opacity: 0;
   filter: blur(15px);
-  transform: translateY(10px);
-  animation: mentorTextMorph 6s infinite;
+  transform: scale(0.9);
+  animation: mentorTextMorph 6s infinite ease-in-out;
 }
 
 .mentor-morph-heading span:nth-child(1) {
@@ -790,28 +827,85 @@
 .mentor-morph-heading span:nth-child(3) {
   animation-delay: 4s;
 }
-.mentor-morph-heading {
-  position: relative;
-  display: grid;
-  place-items: center start;
-  width: fit-content;
-  min-height: 75px;
-  margin: 15px 0;
-  font-size: 64px;
-  font-weight: 700;
-  line-height: 1.1;
+
+@keyframes mentorTextMorph {
+  0%, 20%, 100% {
+    opacity: 0;
+    filter: blur(15px);
+    transform: scale(0.9);
+  }
+  33%, 83% {
+    opacity: 1;
+    filter: blur(0px);
+    transform: scale(1);
+  }
 }
 
-.mentor-morph-heading span {
-  grid-area: 1 / 1;
-  display: block;
-  white-space: nowrap;
-  opacity: 0;
-  filter: blur(15px);
-  transform: scale(0.9);
-  animation: mentorTextMorph 6s infinite ease-in-out;
+.mentor-banner-arrows {
+  position: absolute;
+  display: flex;
+  gap: 2px;
+  color: #94a3b8;
+  opacity: 0.6;
 }
 
+.mentor-banner-arrows.top-left {
+  top: 24px;
+  left: 30px;
+  animation: moveArrowsLeft 2s infinite ease-in-out;
+}
+
+.mentor-banner-arrows.bottom-right {
+  bottom: 24px;
+  right: 30px;
+  animation: moveArrowsRight 2s infinite ease-in-out;
+}
+
+@keyframes moveArrowsLeft {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(6px);
+  }
+}
+
+@keyframes moveArrowsRight {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-6px);
+  }
+}
+
+.mentor-welcome-banner p {
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-top: 12px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.mentor-primary-btn {
+  display: inline-flex;
+  align-items: center;
+  background: #1e293b;
+  color: #ffffff;
+  font-weight: 600;
+  padding: 10px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(30, 41, 59, 0.2);
+  transition: all 0.3s ease;
+}
+
+.mentor-primary-btn:hover {
+  background: #0f172a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(30, 41, 59, 0.3);
+}
 @keyframes mentorTextMorph {
   0% {
     opacity: 0;
@@ -843,9 +937,6 @@
     transform: scale(1.05);
   }
 }
-/* ================================
-   MENTOR STATS GRID
-================================ */
 
 .mentor-stats-grid {
   display: grid;
@@ -996,4 +1087,102 @@
     grid-template-columns: 1fr;
     gap: 18px;
   }
+}
+/* --- Matching Welcome Banner Styles --- */
+.mentor-welcome-banner {
+  position: relative;
+  background: linear-gradient(135deg, #e4ecf3 0%, #cfdbec 100%);
+  border-radius: 16px;
+  padding: 48px 40px;
+  text-align: center;
+  color: #1e293b;
+  box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.6);
+  margin-bottom: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.mentor-welcome-text {
+  max-width: 650px;
+  z-index: 2;
+}
+
+.mentor-eyebrow {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #64748b;
+  margin-bottom: 8px;
+}
+
+/* --- Moving Arrow Chevron Animations --- */
+.mentor-banner-arrows {
+  position: absolute;
+  display: flex;
+  gap: 2px;
+  color: #94a3b8;
+  opacity: 0.6;
+}
+
+.mentor-banner-arrows.top-left {
+  top: 24px;
+  left: 30px;
+  animation: moveArrowsLeft 2s infinite ease-in-out;
+}
+
+.mentor-banner-arrows.bottom-right {
+  bottom: 24px;
+  right: 30px;
+  animation: moveArrowsRight 2s infinite ease-in-out;
+}
+
+@keyframes moveArrowsLeft {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(6px);
+  }
+}
+
+@keyframes moveArrowsRight {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-6px);
+  }
+}
+
+/* --- Typography & Depth Shadows --- */
+.mentor-welcome-banner p {
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-top: 12px;
+  margin-bottom: 24px;
+}
+
+.mentor-primary-btn {
+  display: inline-flex;
+  align-items: center;
+  background: #1e293b;
+  color: #ffffff;
+  font-weight: 600;
+  padding: 10px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(30, 41, 59, 0.2);
+  transition: all 0.3s ease;
+}
+
+.mentor-primary-btn:hover {
+  background: #0f172a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(30, 41, 59, 0.3);
 }

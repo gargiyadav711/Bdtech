@@ -1,20 +1,20 @@
+
 import { useEffect, useState } from "react";
 import "./App.css";
+
 import LandingPage from "./LandingPage.jsx";
 import Welcome from "./Components/welcome.jsx";
 import ForgotPassword from "./Components/ForgotPassword.jsx";
+
 import MentorDashboard from "./mentor/MentorDashboard";
+import AssignedStudents from "./mentor/AssignedStudents";
 
 function App() {
   const getRoute = () => {
     const path = window.location.pathname;
     const hash = window.location.hash;
-
     if (path === "/login" || hash === "#login") return "login";
-
     if (path === "/forgot" || hash === "#forgot") return "forgot";
-    if (hash === "#forgot" || path === "/forgot") return "forgot";
-    if (hash === "#login" || path === "/login") return "login";
     if (
       hash === "#register" ||
       hash === "#signup" ||
@@ -24,11 +24,10 @@ function App() {
     }
 
     if (
-      hash === "#register" ||
-      hash === "#signup" ||
-      path === "/register"
+      path === "/mentor/students" ||
+      hash === "#students"
     ) {
-      return "register";
+      return "students";
     }
 
     if (path === "/mentor" || hash === "#mentor") return "mentor";
@@ -39,7 +38,9 @@ function App() {
   const [route, setRoute] = useState(getRoute);
 
   useEffect(() => {
-    const handleLocationChange = () => setRoute(getRoute());
+    const handleLocationChange = () => {
+      setRoute(getRoute());
+    };
 
     window.addEventListener("hashchange", handleLocationChange);
     window.addEventListener("popstate", handleLocationChange);
@@ -51,8 +52,13 @@ function App() {
   }, []);
 
   if (route === "login") return <Welcome />;
-  if (route === "register") return <Welcome initialMode="signup" />;
+
+  if (route === "register") {
+    return <Welcome initialMode="signup" />;
+  }
+
   if (route === "forgot") return <ForgotPassword />;
+  if (route === "students") return <AssignedStudents />;
   if (route === "mentor") return <MentorDashboard />;
 
   return <LandingPage />;

@@ -1,7 +1,8 @@
-import { Users, ClipboardCheck, FolderKanban, CalendarDays, ArrowUpRight, Clock, CheckCircle2, CircleAlert, BookOpen, ChevronRight, } from "lucide-react";
+import { Users, ClipboardCheck, FolderKanban, CalendarDays, ArrowUpRight, Clock, CheckCircle2, CircleAlert, BookOpen, ChevronRight, ChevronsRight } from "lucide-react";
 
 import MentorSidebar from "../Components/MentorSidebar";
 import "./MentorDashboard.css";
+
 function TextMorphHeading() {
   const words = ["Guide.", "Inspire.", "Empower."];
 
@@ -20,6 +21,7 @@ function TextMorphHeading() {
     </h2>
   );
 }
+
 const stats = [
   {
     title: "Assigned Students",
@@ -148,6 +150,12 @@ function MentorDashboard() {
           </div>
         </header>
         <section className="mentor-welcome-banner">
+          <div className="mentor-banner-arrows top-left">
+            <ChevronsRight size={50} />
+            <ChevronsRight size={50} />
+            <ChevronsRight size={50} />
+          </div>
+
           <div className="mentor-welcome-text">
             <span className="mentor-eyebrow">YOUR IMPACT MATTERS</span>
             <TextMorphHeading />
@@ -159,7 +167,14 @@ function MentorDashboard() {
               Explore Students
             </a>
           </div>
+
+          <div className="mentor-banner-arrows bottom-right">
+            <ChevronsRight size={50} />
+            <ChevronsRight size={50} />
+            <ChevronsRight size={50} />
+          </div>
         </section>
+
         <section className="mentor-stats-grid">
           {stats.map((stat) => {
             const Icon = stat.icon;
@@ -188,8 +203,8 @@ function MentorDashboard() {
             );
           })}
         </section>
-        <section className="mentor-middle-grid">
 
+        <section className="mentor-middle-grid">
           <div className="mentor-panel">
             <div className="mentor-panel-heading">
               <div>
@@ -242,6 +257,7 @@ function MentorDashboard() {
               ))}
             </div>
           </div>
+
           <div className="mentor-panel mentor-schedule-panel">
             <div className="mentor-panel-heading">
               <div>
@@ -317,6 +333,7 @@ function MentorDashboard() {
               View all submissions <ChevronRight size={16} />
             </a>
           </div>
+
           <div className="mentor-panel mentor-quick-panel">
             <div className="mentor-panel-heading">
               <div>
@@ -354,11 +371,11 @@ function MentorDashboard() {
             </div>
           </div>
         </section>
+
         <footer className="mentor-footer">
           <p>© 2026 SocietySelect. All rights reserved.</p>
           <p>Empowering student growth, one step at a time.</p>
         </footer>
-
       </main>
     </div>
   );
