@@ -1,4 +1,4 @@
-@import url('https://fonts.google.com/share?selection.family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900|Roboto:ital,wght@0,100..900;1,100..900');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@400;500;700&display=swap');
 
 * {
   box-sizing: border-box;
@@ -755,3 +755,58 @@ a {
   white-space: nowrap;
 }
 
+
+
+/* Animated border beam around the feature card */
+.feature-beam-wrapper {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 28px;
+  padding: 2px;
+}
+
+.feature-beam-wrapper::before {
+  content: "";
+  position: absolute;
+  inset: -150%;
+  z-index: -2;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 285deg,
+    #eafaff 320deg,
+    #ffffff 335deg,
+    #6ba9bc 350deg,
+    transparent 360deg
+  );
+  animation: featureBeamRotate 5s linear infinite;
+}
+
+.feature-beam-wrapper::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  z-index: -1;
+  border-radius: 26px;
+  background: #73aabd;
+}
+
+.feature-card {
+  position: relative;
+  border-radius: 26px;
+  background: #73aabd;
+  padding: 26px;
+}
+
+@keyframes featureBeamRotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feature-beam-wrapper::before {
+    animation: none;
+  }
+}
