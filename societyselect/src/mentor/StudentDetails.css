@@ -1,0 +1,315 @@
+
+/* STUDENT DETAILS PAGE */
+
+.student-details-layout {
+  width: 100%;
+  min-height: 100vh;
+  background: #f5f9fb;
+}
+
+.student-details-page {
+  margin-left: 260px;
+  width: calc(100% - 260px);
+  min-height: 100vh;
+  padding: 30px;
+  box-sizing: border-box;
+  background: #f5f9fb;
+}
+
+.student-details-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.student-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #e5edf1;
+  background: white;
+  color: #527d8c;
+  border-radius: 9px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.student-back-btn:hover {
+  background: #eaf3f8;
+}
+
+.student-profile-label {
+  color: #83a6b4;
+  font-size: 10px;
+  letter-spacing: 2px;
+  font-weight: 700;
+}
+
+/* PROFILE CARD */
+
+.student-social-profile-card {
+  width: 100%;
+  max-width: 850px;
+  margin: 0 auto;
+  background: #294b59;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 7px 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* USER HEADER */
+
+.student-social-card-header {
+  min-height: 105px;
+  padding: 22px 25px;
+  background: #b7d6e4;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.student-social-avatar {
+  width: 65px;
+  height: 65px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: #315c6b;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.student-social-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.student-social-user-info h3 {
+  color: #294b59;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 7px;
+}
+
+.student-social-user-info p {
+  color: #527d8c;
+  font-size: 12px;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* DESCRIPTION */
+
+.student-social-description {
+  margin: 14px;
+  padding: 24px;
+  background: #3c6473;
+  border-radius: 9px;
+  color: #eaf3f8;
+}
+
+.social-description-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 13px;
+}
+
+.social-description-heading h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 18px;
+}
+
+.social-about-text {
+  font-size: 13px;
+  color: #d7e8ee;
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+
+.social-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 15px 0;
+  font-size: 12px;
+  color: #eaf3f8;
+  overflow-wrap: anywhere;
+}
+
+.social-detail-item svg {
+  flex-shrink: 0;
+  color: #b7d6e4;
+}
+
+.social-description-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.17);
+  margin: 22px 0;
+}
+
+/* SKILLS, PROJECTS AND ACHIEVEMENTS */
+
+.social-extra-details h4 {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #ffffff;
+  font-size: 14px;
+  margin: 0 0 15px;
+}
+
+.social-extra-details h4 svg {
+  color: #b7d6e4;
+}
+
+.social-extra-details > p {
+  font-size: 12px;
+  color: #c5dbe3;
+}
+
+.social-detail-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.social-detail-tags span {
+  background: rgba(183, 214, 228, 0.17);
+  border: 1px solid rgba(183, 214, 228, 0.25);
+  color: #eaf3f8;
+  padding: 7px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+}
+
+.social-project-item {
+  padding: 13px 15px;
+  margin-bottom: 12px;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 8px;
+}
+
+.social-project-item strong {
+  color: #ffffff;
+  font-size: 13px;
+}
+
+.social-project-item p {
+  color: #c5dbe3;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.social-achievement-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 13px 0;
+  color: #eaf3f8;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.social-achievement-item svg {
+  color: #b7d6e4;
+  flex-shrink: 0;
+}
+
+/* STATUS */
+
+.student-social-description .student-status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: capitalize;
+  background: #e8f5ed;
+  color: #438b5d;
+}
+
+/* SOCIAL LINKS */
+
+.student-social-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  padding: 20px;
+  margin: 0 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.student-social-links a {
+  color: #b7d6e4;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.student-social-links a:hover {
+  color: #ffffff;
+  transform: translateY(-5px);
+}
+
+/* NOT FOUND */
+
+.student-not-found {
+  background: white;
+  padding: 50px;
+  text-align: center;
+  border-radius: 15px;
+  color: #527d8c;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+  .student-details-page {
+    margin-left: 220px;
+    width: calc(100% - 220px);
+    padding: 22px;
+  }
+}
+
+@media (max-width: 600px) {
+  .student-details-page {
+    margin-left: 70px;
+    width: calc(100% - 70px);
+    padding: 18px 12px;
+  }
+
+  .student-social-card-header {
+    padding: 16px;
+  }
+
+  .student-social-description {
+    padding: 17px;
+  }
+
+  .student-social-user-info h3 {
+    font-size: 17px;
+  }
+
+  .student-details-topbar {
+    gap: 10px;
+  }
+
+  .student-profile-label {
+    font-size: 8px;
+  }
+}

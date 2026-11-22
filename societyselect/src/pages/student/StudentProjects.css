@@ -1,0 +1,740 @@
+
+.student-projects-page {
+  min-height: 100vh;
+  padding: 30px;
+  background: #f7f8fc;
+  color: #252941;
+  font-family: inherit;
+}
+
+/* Header */
+
+.sp-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+.sp-page-header h1 {
+  font-size: 28px;
+  margin: 0 0 8px;
+  font-weight: 700;
+}
+
+.sp-primary-btn {
+  border: none;
+  background: #5b55cb;
+  color: white;
+  padding: 13px 19px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.sp-primary-btn:hover {
+  background: #4942b3;
+  transform: translateY(-1px);
+}
+
+/* Stats */
+
+.sp-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 17px;
+  margin-bottom: 25px;
+}
+
+.sp-stat-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 21px;
+  background: white;
+  border: 1px solid #eceef4;
+  border-radius: 13px;
+}
+
+.sp-stat-icon {
+  width: 45px;
+  height: 45px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sp-purple {
+  background: #efedff;
+  color: #6557ce;
+}
+
+.sp-orange {
+  background: #fff2e6;
+  color: #e89b42;
+}
+
+.sp-green {
+  background: #e7f8ee;
+  color: #28a06b;
+}
+
+.sp-red {
+  background: #ffeded;
+  color: #e05d61;
+}
+
+.sp-stat-card span {
+  font-size: 12px;
+  color: #8d93a4;
+}
+
+.sp-stat-card h2 {
+  margin-top: 7px;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+/* Form */
+
+.sp-form-card {
+  background: white;
+  border: 1px solid #e9ebf2;
+  border-radius: 15px;
+  padding: 25px;
+  margin-bottom: 27px;
+}
+
+.sp-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 25px;
+}
+
+.sp-form-header h2 {
+  font-size: 19px;
+  margin-bottom: 8px;
+}
+
+.sp-form-header p {
+  color: #9297a8;
+  font-size: 13px;
+}
+
+.sp-close-btn {
+  border: none;
+  background: #f3f4f8;
+  color: #72788b;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.sp-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.sp-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.sp-full-width {
+  grid-column: 1 / -1;
+}
+
+.sp-form-group label {
+  color: #454b60;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.sp-form-group input,
+.sp-form-group select,
+.sp-form-group textarea {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #e5e7ef;
+  border-radius: 9px;
+  background: white;
+  outline: none;
+  font-family: inherit;
+  font-size: 13px;
+  color: #343950;
+  transition: 0.2s;
+  box-sizing: border-box;
+}
+
+.sp-form-group input:focus,
+.sp-form-group select:focus,
+.sp-form-group textarea:focus {
+  border-color: #7771db;
+  box-shadow: 0 0 0 3px #7771db12;
+}
+
+.sp-form-group textarea {
+  resize: vertical;
+  min-height: 110px;
+}
+
+.sp-form-group input::placeholder,
+.sp-form-group textarea::placeholder {
+  color: #b0b4c0;
+}
+
+/* Upload */
+
+.sp-upload-area {
+  border: 1px dashed #cfd2e1;
+  border-radius: 10px;
+  min-height: 125px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 9px;
+  color: #6961ca !important;
+  background: #fafaff;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.sp-upload-area:hover {
+  background: #f3f2ff;
+  border-color: #7771db;
+}
+
+.sp-upload-area span {
+  font-size: 13px;
+  font-weight: 500;
+  color: #555c72;
+}
+
+.sp-upload-area small {
+  font-size: 11px;
+  color: #969bad;
+}
+
+.sp-remove-file {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border: none;
+  background: transparent;
+  color: #e05d61;
+  font-size: 12px;
+  margin-top: 8px;
+  cursor: pointer;
+}
+
+/* Form Buttons */
+
+.sp-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid #eff0f5;
+}
+
+.sp-cancel-btn,
+.sp-submit-btn {
+  padding: 12px 18px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.sp-cancel-btn {
+  background: white;
+  border: 1px solid #e5e7ef;
+  color: #656b7f;
+}
+
+.sp-submit-btn {
+  border: none;
+  background: #5b55cb;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sp-submit-btn:hover {
+  background: #4942b3;
+}
+
+/* Projects */
+
+.sp-projects-section {
+  margin-top: 10px;
+}
+
+.sp-projects-section-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.sp-projects-section-header h2 {
+  font-size: 19px;
+  margin-bottom: 7px;
+}
+
+.sp-projects-section-header p {
+  font-size: 13px;
+  color: #9197a8;
+}
+
+.sp-projects-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 19px;
+}
+
+.sp-project-card {
+  background: white;
+  border: 1px solid #eceef4;
+  border-radius: 14px;
+  padding: 22px;
+  transition: 0.2s;
+}
+
+.sp-project-card:hover {
+  border-color: #d9d7f7;
+  box-shadow: 0 5px 20px #26204a08;
+  transform: translateY(-2px);
+}
+
+.sp-project-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 17px;
+}
+
+.sp-project-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #efedff;
+  color: #6557ce;
+}
+
+.sp-project-status {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 7px 11px;
+  border-radius: 20px;
+}
+
+.sp-status-approved {
+  background: #e8f8ef;
+  color: #229b61;
+}
+
+.sp-status-pending {
+  background: #fff4e8;
+  color: #d79437;
+}
+
+.sp-status-revision {
+  background: #ffeded;
+  color: #df5b60;
+}
+
+.sp-project-card h3 {
+  font-size: 17px;
+  margin-bottom: 8px;
+  color: #30364b;
+}
+
+.sp-project-society {
+  font-size: 12px;
+  color: #6557ce;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.sp-project-description {
+  font-size: 13px;
+  line-height: 1.7;
+  color: #858b9e;
+  min-height: 44px;
+  margin-bottom: 16px;
+}
+
+.sp-tech-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 17px;
+}
+
+.sp-tech-stack span {
+  background: #f2f3f8;
+  color: #62697e;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+}
+
+.sp-project-links {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  margin-bottom: 16px;
+}
+
+.sp-project-links a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  color: #5b55cb;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.sp-project-links a:hover {
+  color: #3731a0;
+}
+
+.sp-project-date {
+  font-size: 11px;
+  color: #a0a5b2;
+  border-top: 1px solid #f0f1f5;
+  padding-top: 13px;
+}
+
+/* Feedback */
+
+.sp-feedback {
+  background: #f0faf5;
+  border: 1px solid #dcefe5;
+  border-radius: 9px;
+  padding: 13px;
+  margin-top: 15px;
+}
+
+.sp-feedback strong {
+  font-size: 12px;
+  color: #278b5b;
+}
+
+.sp-feedback p {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #647c6c;
+  margin-top: 6px;
+}
+
+.sp-feedback-revision {
+  background: #fff8ed;
+  border-color: #f2e2c9;
+}
+
+.sp-feedback-revision strong {
+  color: #c48331;
+}
+
+.sp-feedback-revision p {
+  color: #8c775c;
+}
+
+.sp-no-feedback {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: #fff8ed;
+  color: #c48a38;
+  padding: 12px;
+  border-radius: 9px;
+  font-size: 12px;
+  margin-top: 15px;
+}
+
+/* Responsive */
+
+@media (max-width: 1100px) {
+  .sp-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sp-projects-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 650px) {
+  .student-projects-page {
+    padding: 18px;
+  }
+
+  .sp-page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .sp-stats-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .sp-stat-card {
+    padding: 14px;
+    gap: 10px;
+  }
+
+  .sp-stat-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .sp-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sp-full-width {
+    grid-column: auto;
+  }
+
+  .sp-form-card {
+    padding: 17px;
+  }
+
+  .sp-project-card {
+    padding: 17px;
+  }
+}
+/* Elegant Multi-step Form Overlay (Image_0 Inspired) */
+
+.sp-overlay-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(37, 41, 65, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.sp-elegant-form-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 540px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 4px;
+  padding: 50px 45px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  position: relative;
+  box-sizing: border-box;
+}
+
+.sp-elegant-close-btn {
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  background: transparent;
+  border: none;
+  color: #a0a0a0;
+  cursor: pointer;
+  padding: 5px;
+  transition: color 0.2s;
+}
+
+.sp-elegant-close-btn:hover {
+  color: #333333;
+}
+
+.sp-elegant-header {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.sp-elegant-subtitle {
+  font-family: inherit;
+  font-size: 11px;
+  letter-spacing: 2px;
+  font-weight: 700;
+  color: #1a2b4c;
+  display: block;
+  margin-bottom: 15px;
+}
+
+.sp-elegant-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 32px;
+  line-height: 1.2;
+  color: #111e38;
+  margin: 0 0 12px 0;
+  font-weight: normal;
+}
+
+.sp-elegant-desc {
+  font-size: 13px;
+  color: #707070;
+  margin: 0;
+}
+
+/* Form Styles */
+
+.sp-elegant-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sp-elegant-group {
+  width: 100%;
+}
+
+.sp-elegant-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.sp-elegant-form input[type="text"],
+.sp-elegant-form textarea {
+  width: 100%;
+  padding: 16px 20px;
+  border: 1px solid #f0f0f0;
+  border-radius: 4px;
+  background: #fafafa;
+  font-size: 14px;
+  color: #333333;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.sp-elegant-form input[type="text"]::placeholder,
+.sp-elegant-form textarea::placeholder {
+  color: #9c9c9c;
+}
+
+.sp-elegant-form input[type="text"]:focus,
+.sp-elegant-form textarea:focus {
+  border-color: #d1d1d1;
+  background: #ffffff;
+  outline: none;
+}
+
+.sp-elegant-form textarea {
+  resize: none;
+}
+
+/* Custom file attachment styling to match look */
+.sp-elegant-file-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 16px 20px;
+  border: 1px dashed #e0e0e0;
+  background: #fafafa;
+  color: #707070;
+  font-size: 14px;
+  cursor: pointer;
+  box-sizing: border-box;
+  border-radius: 4px;
+}
+
+.sp-elegant-file-label:hover {
+  background: #f5f5f5;
+}
+
+.sp-elegant-remove-file {
+  background: transparent;
+  border: none;
+  color: #ff5252;
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+  cursor: pointer;
+}
+
+.sp-elegant-footnote {
+  font-size: 11px;
+  color: #9c9c9c;
+  margin: 8px 0 0 0;
+  text-align: center;
+}
+
+/* Signature Mint Button */
+.sp-elegant-submit-btn {
+  width: 100%;
+  background: #d4f2e3; /* Soft mint green */
+  border: 1px solid #1a2b4c; /* Dark border matching Image_0 */
+  color: #1a2b4c;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 1.5px;
+  padding: 18px;
+  cursor: pointer;
+  margin-top: 10px;
+  text-transform: uppercase;
+  transition: transform 0.1s, background-color 0.2s;
+}
+
+.sp-elegant-submit-btn:hover {
+  background: #c3ebd5;
+}
+
+.sp-elegant-submit-btn:active {
+  transform: translateY(1px);
+}
+
+/* Modal Responsiveness */
+@media (max-width: 600px) {
+  .sp-elegant-form-card {
+    padding: 35px 25px;
+  }
+  .sp-elegant-row {
+    grid-template-columns: 1fr;
+  }
+}
+.sp-projects-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 19px;
+}
+
+.sp-project-card.spotlight-card {
+  border-radius: 14px;
+  padding: 22px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.sp-project-card.spotlight-card:hover {
+  box-shadow: 0 5px 20px #26204a08;
+  transform: translateY(-2px);
+}

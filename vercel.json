@@ -4,6 +4,10 @@
   "outputDirectory": "societyselect/dist",
   "rewrites": [
     {
+      "source": "/api/:path*",
+      "destination": "https://societyselect.onrender.com/api/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

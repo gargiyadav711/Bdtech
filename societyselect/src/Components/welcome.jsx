@@ -1,29 +1,387 @@
-
-import { useState } from "react";
-import { FaArrowLeft, FaGoogle, FaLinkedinIn, FaTimes } from "react-icons/fa";
+import { useCallback, useEffect, useState } from "react";
+import {
+  FaArrowLeft,
+  FaCheckCircle,
+  FaEye,
+  FaEyeSlash,
+  FaGoogle,
+  FaLinkedinIn,
+  FaTimes,
+} from "react-icons/fa";
+import { apiRequest } from "../utils/api.js";
 import "./welcome.css";
+
+const GOOGLE_CLIENT_ID =
+  "524622286901-nn6dac26l3k4th6p4a2t3kl3jq5vblov.apps.googleusercontent.com";
 
 export default function LoginPage({ initialMode = "login" }) {
   const [isSignup, setIsSignup] = useState(initialMode === "signup");
+
+  // Guard to block browser autofill on initial page load
+  const [inputUnlocked, setInputUnlocked] = useState(false);
+
+  // Password visibility toggles
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showSignupPassword, setShowSignupPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // Login State
+  const [loginRole, setLoginRole] = useState("STUDENT");
+  const [loginData, setLoginData] = useState({ email: "", password: "" });
+
+  // Signup State
+  const [signupRole, setSignupRole] = useState("STUDENT");
+  const [signupData, setSignupData] = useState({
+    fullName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    domain: "",
+    studentNumber: "",
+  });
+
+  // OTP & Verification Token State
+  const [showOtpModal, setShowOtpModal] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [emailVerificationToken, setEmailVerificationToken] = useState("");
+
+  // Profile Modal State
   const [showProfileForm, setShowProfileForm] = useState(false);
-  const [loginRole, setLoginRole] = useState("Student");
-  const [signupRole, setSignupRole] = useState("Student");
+  const [pendingGoogleToken, setPendingGoogleToken] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const [modalRole, setModalRole] = useState("STUDENT");
 
-    if (isSignup) {
-      setShowProfileForm(true);
+  // UI Feedback State
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [infoMsg, setInfoMsg] = useState("");
+
+  const saveAuthSession = (data) => {
+    if (data?.accessToken) {
+      localStorage.setItem("accessToken", data.accessToken);
+    }
+    if (data?.user) {
+      localStorage.setItem("user", JSON.stringify(data.user));
+    }
+  };
+
+  const redirectUserToDashboard = (role) => {
+    const normalizedRole = String(role || "").toUpperCase();
+    if (normalizedRole === "STUDENT") {
+      window.location.assign("/student/dashboard");
+      return true;
+    }
+    if (normalizedRole === "MENTOR") {
+      window.location.assign("/mentor");
+      return true;
+    }
+    return false;
+  };
+
+  // Listen for the Google OAuth popup callback.
+  useEffect(() => {
+    if (window.opener && window.location.hash.includes("id_token=")) {
+      const params = new URLSearchParams(window.location.hash.substring(1));
+      const idToken = params.get("id_token");
+      if (idToken) {
+        window.opener.postMessage(
+          { type: "GOOGLE_ID_TOKEN", idToken },
+          window.location.origin
+        );
+        window.close();
+      }
+    }
+  }, []);
+
+  const handleLoginChange = (e) => {
+    setLoginData({ ...loginData, [e.target.name]: e.target.value });
+  };
+
+  const handleSignupChange = (e) => {
+    const { name, value } = e.target;
+    setSignupData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "email" && isEmailVerified) {
+      setIsEmailVerified(false);
+      setEmailVerificationToken("");
+    }
+  };
+
+  // STEP 1: Send / Resend OTP
+  const handleSendOtp = async (isResend = false) => {
+    setErrorMsg("");
+    setInfoMsg("");
+
+    const email = signupData.email.trim().toLowerCase();
+    if (!email.endsWith("@akgec.ac.in")) {
+      setErrorMsg(
+        "Only official AKGEC email addresses (@akgec.ac.in) are allowed"
+      );
       return;
     }
 
-    alert(`Login submitted as ${loginRole}!`);
+    try {
+      setLoading(true);
+      const endpoint = isResend ? "resend-otp" : "send-otp";
+      const data = await apiRequest(`/api/auth/${endpoint}`, {
+        method: "POST",
+        body: { email },
+        auth: false,
+      });
+
+      setShowOtpModal(true);
+      setInfoMsg(data.message || "OTP sent to your college email!");
+    } catch (err) {
+      setErrorMsg(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleProfileSubmit = (e) => {
+  // STEP 2: Verify OTP
+  const handleVerifyOtp = async (e) => {
     e.preventDefault();
-    setShowProfileForm(false);
-    alert(`Account creation submitted as ${signupRole}!`);
+    setErrorMsg("");
+
+    try {
+      setLoading(true);
+      const data = await apiRequest("/api/auth/verify-otp", {
+        method: "POST",
+        body: {
+          email: signupData.email.trim().toLowerCase(),
+          otp: otp.trim(),
+        },
+        auth: false,
+      });
+
+      setIsEmailVerified(true);
+      setEmailVerificationToken(data.verificationToken);
+      setShowOtpModal(false);
+      setOtp("");
+      setInfoMsg("Email verified! Complete your details and click SIGN UP.");
+    } catch (err) {
+      setErrorMsg(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // STEP 3: Open Domain & Student Number Modal
+  const handleSignupStepOne = (e) => {
+    e.preventDefault();
+    setErrorMsg("");
+
+    if (!isEmailVerified || !emailVerificationToken) {
+      setErrorMsg("Please verify your college email with OTP first.");
+      return;
+    }
+
+    if (signupData.password !== signupData.confirmPassword) {
+      setErrorMsg("Passwords do not match.");
+      return;
+    }
+
+    setPendingGoogleToken("");
+    setShowProfileForm(true);
+  };
+
+  // STEP 4: Final Profile Popup Submit
+  const handleProfileSubmit = async (e) => {
+    e.preventDefault();
+    setErrorMsg("");
+    setInfoMsg("");
+
+    if (!/^[0-9]{3,20}$/.test(signupData.studentNumber.trim())) {
+      setErrorMsg("Student number must contain 3 to 20 digits only.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      if (pendingGoogleToken) {
+        const data = await apiRequest("/api/auth/google", {
+          method: "POST",
+          body: {
+            idToken: pendingGoogleToken,
+            role: modalRole,
+            studentNumber: signupData.studentNumber.trim(),
+            domain: signupData.domain.trim(),
+          },
+          auth: false,
+        });
+
+        if (data.requiresStudentNumber) {
+          setErrorMsg(
+            "Backend did not receive studentNumber or domain. Check googleAuthSchema in auth.validator.js."
+          );
+          return;
+        }
+
+        saveAuthSession(data);
+        setShowProfileForm(false);
+        setPendingGoogleToken("");
+        setInfoMsg("");
+        setSignupData({
+          fullName: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+          domain: "",
+          studentNumber: "",
+        });
+        if (redirectUserToDashboard(data.user?.role || modalRole)) return;
+        alert(`Welcome ${data.user?.fullName || ""}! Logged in via Google.`);
+        return;
+      }
+
+      const data = await apiRequest("/api/auth/signup", {
+        method: "POST",
+        body: {
+          fullName: signupData.fullName.trim(),
+          studentNumber: signupData.studentNumber.trim(),
+          email: signupData.email.trim().toLowerCase(),
+          domain: signupData.domain.trim(),
+          emailVerificationToken,
+          password: signupData.password,
+          confirmPassword: signupData.confirmPassword,
+          role: signupRole,
+        },
+        auth: false,
+      });
+
+      saveAuthSession(data);
+      if (data.accessToken && redirectUserToDashboard(data.user?.role || signupRole)) return;
+
+      setShowProfileForm(false);
+      alert("Account created successfully! Please sign in.");
+      setIsSignup(false);
+      setLoginData({ email: "", password: "" });
+      setSignupData({
+        fullName: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        domain: "",
+        studentNumber: "",
+      });
+      setIsEmailVerified(false);
+      setEmailVerificationToken("");
+    } catch (err) {
+      setErrorMsg(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // LOGIN SUBMIT
+  const handleLoginSubmit = async (e) => {
+    e.preventDefault();
+    setErrorMsg("");
+
+    try {
+      setLoading(true);
+      const data = await apiRequest("/api/auth/login", {
+        method: "POST",
+        body: {
+          email: loginData.email.trim().toLowerCase(),
+          password: loginData.password,
+          role: loginRole,
+        },
+        auth: false,
+      });
+
+      saveAuthSession(data);
+
+      setLoginData({ email: "", password: "" });
+      if (redirectUserToDashboard(data.user?.role || loginRole)) return;
+      alert(`Welcome back, ${data.user.fullName} (${data.user.role})!`);
+    } catch (err) {
+      setErrorMsg(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Send the Google ID token to backend /api/auth/google
+  const verifyGoogleTokenWithBackend = useCallback(async (idToken) => {
+    const selectedRole = isSignup ? signupRole : loginRole;
+    try {
+      setLoading(true);
+      setErrorMsg("");
+      const data = await apiRequest("/api/auth/google", {
+        method: "POST",
+        body: {
+          idToken,
+          role: selectedRole,
+        },
+        auth: false,
+      });
+
+      if (data.requiresStudentNumber) {
+        setPendingGoogleToken(idToken);
+        setModalRole(selectedRole);
+        setShowProfileForm(true);
+        setInfoMsg(data.message);
+        return;
+      }
+
+      saveAuthSession(data);
+      if (redirectUserToDashboard(data.user?.role || selectedRole)) return;
+      alert(`Logged in with Google as ${data.user.fullName}!`);
+    } catch (err) {
+      setErrorMsg(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [isSignup, loginRole, signupRole]);
+
+  // Listen for the ID token sent from the Google Account Chooser popup.
+  useEffect(() => {
+    const handleMessage = async (event) => {
+      if (event.origin !== window.location.origin) return;
+      if (event.data?.type === "GOOGLE_ID_TOKEN" && event.data.idToken) {
+        await verifyGoogleTokenWithBackend(event.data.idToken);
+      }
+    };
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, [verifyGoogleTokenWithBackend]);
+
+  // OPEN FULL GOOGLE ACCOUNT CHOOSER PAGE IN POPUP
+  const handleGoogleAuth = () => {
+    setErrorMsg("");
+    if (!GOOGLE_CLIENT_ID) {
+      setErrorMsg(
+        "Google OAuth is not configured. Set VITE_GOOGLE_CLIENT_ID in .env"
+      );
+      return;
+    }
+
+    const redirectUri = new URL("/login", window.location.origin).toString();
+    const nonce = Math.random().toString(36).substring(2) + Date.now();
+
+    // prompt=select_account forces Google to open the account chooser page every time
+    const authUrl =
+      `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `client_id=${encodeURIComponent(GOOGLE_CLIENT_ID)}` +
+      `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+      `&response_type=id_token` +
+      `&scope=${encodeURIComponent("openid email profile")}` +
+      `&prompt=select_account` +
+      `&nonce=${encodeURIComponent(nonce)}`;
+
+    const width = 500;
+    const height = 600;
+    const left = window.screenX + (window.outerWidth - width) / 2;
+    const top = window.screenY + (window.outerHeight - height) / 2;
+
+    window.open(
+      authUrl,
+      "GoogleAccountChooser",
+      `width=${width},height=${height},left=${left},top=${top}`
+    );
   };
 
   return (
@@ -34,37 +392,68 @@ export default function LoginPage({ initialMode = "login" }) {
       </a>
 
       <div className={`auth-container ${isSignup ? "active" : ""}`}>
-
         {/* LOGIN FORM */}
         <div className="form-panel login-panel">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleLoginSubmit} autoComplete="off">
             <h1>Sign in</h1>
-
             <div className="social-icons">
-              <button type="button" aria-label="Google"><FaGoogle aria-hidden="true" /></button>
-              <button type="button" aria-label="LinkedIn"><FaLinkedinIn aria-hidden="true" /></button>
+              <button
+                type="button"
+                aria-label="Google"
+                onClick={handleGoogleAuth}
+                title="Choose a Google Account"
+              >
+                <FaGoogle aria-hidden="true" />
+              </button>
+              <button type="button" aria-label="LinkedIn" disabled>
+                <FaLinkedinIn aria-hidden="true" />
+              </button>
             </div>
+            <span className="form-hint">or use your college email account</span>
 
-            <span className="form-hint">
-              or use your email account
-            </span>
+            {!isSignup && errorMsg && !showProfileForm && (
+              <p className="auth-error-banner">{errorMsg}</p>
+            )}
 
             <input
               type="email"
-              placeholder="Email"
-              pattern="[A-Za-z][A-Za-z0-9._-]*[0-9]+\.?@akgec\.ac\.in"
-              title="Use your AKGEC email with your name and student number, for example name12345.@akgec.ac.in"
+              name="email"
+              placeholder="College Email"
+              value={loginData.email}
+              onChange={handleLoginChange}
+              readOnly={!inputUnlocked}
+              onFocus={() => setInputUnlocked(true)}
+              autoComplete="off"
               required
             />
             <span className="email-hint">
               Use your AKGEC email: name12345@akgec.ac.in
             </span>
 
-            <input
-              type="password"
-              placeholder="Password"
-              required
-            />
+            {/* LOGIN PASSWORD WITH EYE TOGGLE */}
+            <div className="password-input-wrapper">
+              <input
+                type={showLoginPassword ? "text" : "password"}
+                name="password"
+                placeholder="Password"
+                value={loginData.password}
+                onChange={handleLoginChange}
+                readOnly={!inputUnlocked}
+                onFocus={() => setInputUnlocked(true)}
+                autoComplete="new-password"
+                required
+              />
+              <button
+                type="button"
+                className="password-toggle-btn"
+                aria-label={
+                  showLoginPassword ? "Hide password" : "Show password"
+                }
+                onClick={() => setShowLoginPassword((prev) => !prev)}
+              >
+                {showLoginPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
 
             <label className="role-label" htmlFor="login-role">
               Sign in as
@@ -75,57 +464,142 @@ export default function LoginPage({ initialMode = "login" }) {
               value={loginRole}
               onChange={(e) => setLoginRole(e.target.value)}
             >
-              <option>Student</option>
-              <option>Mentor</option>
+              <option value="STUDENT">Student</option>
+              <option value="MENTOR">Mentor</option>
             </select>
-
-            <a href="#forgot" className="forgot-link">
+            <a href="/forgot" className="forgot-link">
               Forgot your password?
             </a>
-
-            <button className="auth-button" type="submit">
-              SIGN IN
+            <button className="auth-button" type="submit" disabled={loading}>
+              {loading ? "SIGNING IN..." : "SIGN IN"}
             </button>
           </form>
         </div>
 
         {/* SIGNUP FORM */}
         <div className="form-panel signup-panel">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSignupStepOne} autoComplete="off">
             <h1>Create Account</h1>
-
             <div className="social-icons">
-              <button type="button" aria-label="Google"><FaGoogle aria-hidden="true" /></button>
-              <button type="button" aria-label="LinkedIn"><FaLinkedinIn aria-hidden="true" /></button>
+              <button
+                type="button"
+                aria-label="Google"
+                onClick={handleGoogleAuth}
+                title="Sign up with a Google Account"
+              >
+                <FaGoogle aria-hidden="true" />
+              </button>
+              <button type="button" aria-label="LinkedIn" disabled>
+                <FaLinkedinIn aria-hidden="true" />
+              </button>
             </div>
+            <span className="form-hint">or register using your email</span>
 
-            <span className="form-hint">
-              or register using your email
-            </span>
+            {isSignup && errorMsg && !showOtpModal && !showProfileForm && (
+              <p className="auth-error-banner">{errorMsg}</p>
+            )}
+            {isSignup && infoMsg && !showOtpModal && !showProfileForm && (
+              <p className="auth-info-banner">{infoMsg}</p>
+            )}
 
             <input
               type="text"
-              placeholder="Name"
+              name="fullName"
+              placeholder="Full Name"
+              value={signupData.fullName}
+              onChange={handleSignupChange}
+              readOnly={!inputUnlocked}
+              onFocus={() => setInputUnlocked(true)}
+              autoComplete="off"
+              minLength={2}
               required
             />
 
-            <input
-              type="email"
-              placeholder="Email"
-              pattern="[A-Za-z][A-Za-z0-9._-]*[0-9]+\.?@akgec\.ac\.in"
-              title="Use your AKGEC email with your name and student number, for example name12345.@akgec.ac.in"
-              required
-            />
+            {/* EMAIL INPUT + VERIFY BUTTON */}
+            <div className="email-verify-row">
+              <input
+                type="email"
+                name="email"
+                placeholder="AKGEC Email"
+                value={signupData.email}
+                onChange={handleSignupChange}
+                readOnly={!inputUnlocked || isEmailVerified}
+                onFocus={() => setInputUnlocked(true)}
+                autoComplete="off"
+                required
+              />
+              {isEmailVerified ? (
+                <span className="verified-badge">
+                  <FaCheckCircle aria-hidden="true" /> Verified
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  className="verify-email-btn"
+                  onClick={() => handleSendOtp(false)}
+                  disabled={loading || !signupData.email}
+                >
+                  {loading ? "..." : "Verify"}
+                </button>
+              )}
+            </div>
             <span className="email-hint">
-              Use your AKGEC email: name12345.@akgec.ac.in
+              Official email required: name12345@akgec.ac.in
             </span>
 
-            <input
-              type="password"
-              placeholder="Password"
-              required
-              minLength={8}
-            />
+            {/* SIGNUP PASSWORD WITH EYE TOGGLE */}
+            <div className="password-input-wrapper">
+              <input
+                type={showSignupPassword ? "text" : "password"}
+                name="password"
+                placeholder="Password (min 8 chars)"
+                value={signupData.password}
+                onChange={handleSignupChange}
+                readOnly={!inputUnlocked}
+                onFocus={() => setInputUnlocked(true)}
+                autoComplete="new-password"
+                minLength={8}
+                required
+              />
+              <button
+                type="button"
+                className="password-toggle-btn"
+                aria-label={
+                  showSignupPassword ? "Hide password" : "Show password"
+                }
+                onClick={() => setShowSignupPassword((prev) => !prev)}
+              >
+                {showSignupPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
+
+            {/* CONFIRM PASSWORD WITH EYE TOGGLE */}
+            <div className="password-input-wrapper">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                name="confirmPassword"
+                placeholder="Confirm Password"
+                value={signupData.confirmPassword}
+                onChange={handleSignupChange}
+                readOnly={!inputUnlocked}
+                onFocus={() => setInputUnlocked(true)}
+                autoComplete="new-password"
+                minLength={8}
+                required
+              />
+              <button
+                type="button"
+                className="password-toggle-btn"
+                aria-label={
+                  showConfirmPassword
+                    ? "Hide confirm password"
+                    : "Show confirm password"
+                }
+                onClick={() => setShowConfirmPassword((prev) => !prev)}
+              >
+                {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
 
             <label className="role-label" htmlFor="signup-role">
               Sign up as
@@ -136,47 +610,117 @@ export default function LoginPage({ initialMode = "login" }) {
               value={signupRole}
               onChange={(e) => setSignupRole(e.target.value)}
             >
-              <option>Student</option>
-              <option>Mentor</option>
+              <option value="STUDENT">Student</option>
+              <option value="MENTOR">Mentor</option>
             </select>
-
-            <button className="auth-button" type="submit">
+            <button className="auth-button" type="submit" disabled={loading}>
               SIGN UP
             </button>
           </form>
         </div>
 
-        {/* ORANGE WELCOME PANEL */}
+        {/* WELCOME SLIDING PANEL */}
         <div className="welcome-panel">
           {!isSignup ? (
             <div className="welcome-content">
-              <h2>Welcome To<br />The SocietySelect</h2>
+              <h2>
+                Welcome To
+                <br />
+                The SocietySelect
+              </h2>
               <p>New Here?</p>
-
               <button
                 className="switch-button"
-                onClick={() => setIsSignup(true)}
+                onClick={() => {
+                  setErrorMsg("");
+                  setInfoMsg("");
+                  setIsSignup(true);
+                }}
               >
                 SIGN UP
               </button>
             </div>
           ) : (
             <div className="welcome-content">
-              <h2>Welcome back To<br />The SocietySelect</h2>
+              <h2>
+                Welcome back To
+                <br />
+                The SocietySelect
+              </h2>
               <p className="existing-account-prompt">Already have an account?</p>
-
               <button
                 className="switch-button"
-                onClick={() => setIsSignup(false)}
+                onClick={() => {
+                  setErrorMsg("");
+                  setInfoMsg("");
+                  setIsSignup(false);
+                }}
               >
                 SIGN IN
               </button>
             </div>
           )}
         </div>
-
       </div>
 
+      {/* OTP SUBMISSION POPUP */}
+      {showOtpModal && (
+        <div className="profile-modal-overlay">
+          <section
+            className="profile-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="otp-modal-title"
+          >
+            <button
+              className="profile-modal-close"
+              type="button"
+              aria-label="Close OTP form"
+              onClick={() => setShowOtpModal(false)}
+            >
+              <FaTimes aria-hidden="true" />
+            </button>
+            <h2 id="otp-modal-title">Verify College Email</h2>
+            <p>
+              Enter the 6-digit OTP sent to <strong>{signupData.email}</strong>
+            </p>
+            {errorMsg && <p className="auth-error-banner">{errorMsg}</p>}
+            <form onSubmit={handleVerifyOtp} autoComplete="off">
+              <label htmlFor="otp-code">6-Digit OTP</label>
+              <input
+                id="otp-code"
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]{6}"
+                maxLength={6}
+                placeholder="e.g. 123456"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                required
+              />
+              <div className="otp-actions">
+                <button
+                  className="auth-button"
+                  type="submit"
+                  disabled={loading}
+                >
+                  {loading ? "VERIFYING..." : "VERIFY OTP"}
+                </button>
+                <button
+                  type="button"
+                  className="resend-otp-btn"
+                  onClick={() => handleSendOtp(true)}
+                  disabled={loading}
+                >
+                  Resend OTP
+                </button>
+              </div>
+            </form>
+          </section>
+        </div>
+      )}
+
+      {/* DOMAIN & STUDENT NUMBER POPUP */}
       {showProfileForm && (
         <div className="profile-modal-overlay">
           <section
@@ -193,38 +737,65 @@ export default function LoginPage({ initialMode = "login" }) {
             >
               <FaTimes aria-hidden="true" />
             </button>
-            <h2 id="profile-modal-title">Tell us about your experience</h2>
-            <p>Add your professional domain and years of experience.</p>
+            <h2 id="profile-modal-title">Complete Your Registration</h2>
+            <p>
+              Enter your details and AKGEC student number
+              {(pendingGoogleToken ? modalRole : signupRole) === "MENTOR"
+                ? " (verified against the Society Mentor Registry)."
+                : "."}
+            </p>
+            {errorMsg && <p className="auth-error-banner">{errorMsg}</p>}
+            <form onSubmit={handleProfileSubmit} autoComplete="off">
+              {/* Let Google OAuth users explicitly choose Student or Mentor */}
+              {pendingGoogleToken && (
+                <>
+                  <label htmlFor="profile-role">Register As</label>
+                  <select
+                    id="profile-role"
+                    className="role-select"
+                    value={modalRole}
+                    onChange={(e) => setModalRole(e.target.value)}
+                  >
+                    <option value="STUDENT">Student</option>
+                    <option value="MENTOR">Mentor</option>
+                  </select>
+                </>
+              )}
 
-            <form onSubmit={handleProfileSubmit}>
               <label htmlFor="profile-domain">Domain</label>
               <input
                 id="profile-domain"
                 name="domain"
                 type="text"
-                placeholder="e.g. Frontend development or finance"
+                placeholder="e.g. Web Development, AI/ML, Big Data"
+                value={signupData.domain}
+                onChange={handleSignupChange}
+                minLength={2}
                 required
               />
-
-              <label htmlFor="profile-experience">Years of experience</label>
+              <label htmlFor="profile-student-number">Student Number</label>
               <input
-                id="profile-experience"
-                name="experience"
-                type="number"
-                min="0"
-                step="0.5"
-                placeholder="e.g. 2"
+                id="profile-student-number"
+                name="studentNumber"
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]{3,20}"
+                placeholder="e.g. 2410012 (digits only)"
+                value={signupData.studentNumber}
+                onChange={handleSignupChange}
                 required
               />
-
-              <button className="auth-button" type="submit">
-                COMPLETE SIGN UP
+              <button
+                className="auth-button"
+                type="submit"
+                disabled={loading}
+              >
+                {loading ? "SUBMITTING..." : "COMPLETE SIGN UP"}
               </button>
             </form>
           </section>
         </div>
       )}
-
     </div>
   );
 }
